@@ -1,4 +1,4 @@
-from typing import Generic, Iterable, List, Optional, TypeVar, Protocol, Callable, Union
+from typing import Generic, Iterable, List, Optional, TypeVar, Protocol, Callable, Union, Sequence
 from typing_extensions import TypeAlias
 
 from torch import Tensor
@@ -7,10 +7,7 @@ import torch
 from torch.optim.optimizer import Optimizer
 from torch.nn import Module
 
-from avalanche.benchmarks.scenarios.generic_scenario import (
-    CLExperience,
-)
-from avalanche.benchmarks import DatasetExperience
+from avalanche.benchmarks import DatasetExperience, CLExperience
 from avalanche.core import BasePlugin
 
 TExperienceType = TypeVar("TExperienceType", bound=CLExperience)
@@ -119,8 +116,26 @@ class MetaLearningStrategyProtocol(
     def _after_outer_update(self, **kwargs): ...
 
 
+class SelfSupervisedStrategyProtocol(
+    SGDStrategyProtocol[TSGDExperienceType, TMBInput, TMBOutput],
+    Protocol[TSGDExperienceType, TMBInput, TMBOutput],
+):
+    mb_x: Tensor
+
+    mb_x1: Tensor
+
+    mb_x2: Tensor
+
+    mb_y: Tensor
+
+    mb_task_id: Tensor
+
+    ss_augmentations: Optional[Sequence[Callable]]
+
+
 __all__ = [
     "SGDStrategyProtocol",
     "SupervisedStrategyProtocol",
     "MetaLearningStrategyProtocol",
+    "SelfSupervisedStrategyProtocol",
 ]

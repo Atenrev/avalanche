@@ -7,15 +7,17 @@ necessary to inherit explicit from them or implement all the methods.
 """
 
 from abc import ABC
-from typing import Any, TypeVar, Generic, Protocol, runtime_checkable
+from typing import Any, TypeVar, Generic, Protocol, Union
 from typing import TYPE_CHECKING
 
 from avalanche.benchmarks import CLExperience
+from avalanche.benchmarks.scenarios.generic_scenario import CLStream
 
 if TYPE_CHECKING:
     from avalanche.training.templates.base import BaseTemplate
 
 Template = TypeVar("Template", bound="BaseTemplate")
+TExperienceType = TypeVar("TExperienceType", bound=CLExperience)
 
 
 class Agent:
@@ -349,4 +351,21 @@ class SupervisedMetaLearningPlugin(SupervisedPlugin[Template], ABC):
 
     def after_outer_update(self, strategy: Template, *args, **kwargs) -> Any:
         """Called before `_outer_updates` by the `BaseTemplate`."""
+        pass
+
+
+class SelfSupervisedPlugin(BaseSGDPlugin[Template], ABC):
+    """ABC for SelfSupervisedTemplate plugins.
+
+    See `BaseTemplate` for complete description of the train/eval loop.
+    """
+
+    def __init__(self):
+        """
+        Inizializes an instance of a supervised plugin.
+        """
+        super().__init__()
+
+    def eval_representations(self, strategy: Template, exp_list: Union[TExperienceType, CLStream[TExperienceType]], *args, **kwargs) -> Any:
+        """Called before `eval_representations` by the `BaseTemplate`."""
         pass

@@ -15,4 +15,5 @@ from .base_sgd import BaseSGDTemplate
 from .common_templates import (
     SupervisedTemplate,
     SupervisedMetaLearningTemplate,
+    SelfSupervisedTemplate,
 )
